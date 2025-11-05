@@ -1,17 +1,17 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import z from "zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import {
 	Field,
 	FieldDescription,
 	FieldGroup,
 	FieldSeparator,
-} from "@/components/ui/field";
-import { useAppForm } from "@/hooks/form";
-import { API_URL } from "@/lib/constant";
-import { cn } from "@/lib/utils";
+} from "@/shared/components/ui/field";
+import { useAppForm } from "@/shared/hooks/form";
+import { API_URL } from "@/shared/lib/constant";
+import { cn } from "@/shared/lib/utils";
 
 const schema = z
 	.object({
@@ -61,7 +61,7 @@ export function SignupForm({
 				if (response.ok) {
 					toast.success("Signup successful!", { id: "signup" });
 					router.navigate({
-						to: "/signin",
+						to: "/auth/signin",
 					});
 				}
 				if (!response.ok && data.code === "INVALID_EMAIL_OR_PASSWORD") {
@@ -168,7 +168,7 @@ export function SignupForm({
 							</Field>
 							<FieldDescription className="text-center">
 								Already have an account?{" "}
-								<Link className="text-primary" to="/signin">
+								<Link className="text-primary" to="/auth/signin">
 									Sign in
 								</Link>
 							</FieldDescription>

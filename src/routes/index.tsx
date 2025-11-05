@@ -1,35 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import DashboardLayout from "@/layouts/dashboard-layout";
+import DashboardLayout from "@/shared/layouts/dashboard-layout";
+import { API_URL } from "@/shared/lib/constant";
 
 export const Route = createFileRoute("/")({
 	component: App,
 	beforeLoad: async () => {
-		console.log(document.cookie);
+	
 	},
 });
 
 async function fetchData() {
-const url = 'http://localhost:3000/api/v1/tasks';
-const options = {
-  method: 'GET',
-  headers: {origin: 'http://localhost:3000', authorization: 'Bearer '},
-	credentials: 'include' as RequestCredentials,
-};
+	const url = `${API_URL}/tasks`;
+	const options = {
+		method: "GET",
+		headers: {  authorization: "Bearer " },
+		credentials: "include" as RequestCredentials,
+	};
 
-try {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  console.log(data);
-} catch (error) {
-  console.error(error);
-}
+	try {
+		const response = await fetch(url, options);
+		const data = await response.json();
+		console.log(data);
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 function App() {
 	useEffect(() => {
 		fetchData();
-		
 	}, []);
 	return (
 		<DashboardLayout>

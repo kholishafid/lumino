@@ -1,17 +1,17 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import z from "zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import {
 	Field,
 	FieldDescription,
 	FieldGroup,
 	FieldSeparator,
-} from "@/components/ui/field";
-import { useAppForm } from "@/hooks/form";
-import { API_URL } from "@/lib/constant";
-import { cn } from "@/lib/utils";
+} from "@/shared/components/ui/field";
+import { useAppForm } from "@/shared/hooks/form";
+import { cn } from "@/shared/lib/utils";
+import authService from "@/shared/services/auth-service";
 
 const schema = z.object({
 	email: z.email("Invalid email address"),
@@ -33,26 +33,19 @@ export function SigninForm({
 		},
 		onSubmit: async ({ value }) => {
 			toast.loading("Signing in...", { id: "signin" });
-			const url = `${API_URL}/auth/sign-in/email`;
-			const options = {
-				method: "POST",
-				headers: {
-					"content-type": "application/json",
-				},
-				body: JSON.stringify(value),
-				credentials: "include" as RequestCredentials,
-			};
 
 			try {
-				const response = await fetch(url, options);
+				const response = await authService.signIn(value);
 				const data = await response.json();
 
 				if (response.ok) {
+					console.log("Signin successful:", data);
 					toast.success("Signin successful!", { id: "signin" });
-					router.navigate({
-						to: "/",
-					});
+					// router.navigate({
+					// 	to: "/",
+					// });
 				}
+
 				if (!response.ok && data.code === "INVALID_EMAIL_OR_PASSWORD") {
 					toast.error("Invalid email or password.", { id: "signin" });
 					form.setErrorMap({
@@ -142,7 +135,7 @@ export function SigninForm({
 							</Field>
 							<FieldDescription className="text-center">
 								Don&apos;t have an account?{" "}
-								<Link className="text-primary" to="/signup">
+								<Link className="text-primary" to="/auth/signup">
 									Sign up
 								</Link>
 							</FieldDescription>
