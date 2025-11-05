@@ -10,6 +10,7 @@ import {
 	FieldSeparator,
 } from "@/shared/components/ui/field";
 import { useAppForm } from "@/shared/hooks/form";
+import cookieHelper from "@/shared/lib/cookie";
 import { cn } from "@/shared/lib/utils";
 import authService from "@/shared/services/auth-service";
 
@@ -41,9 +42,10 @@ export function SigninForm({
 				if (response.ok) {
 					console.log("Signin successful:", data);
 					toast.success("Signin successful!", { id: "signin" });
-					// router.navigate({
-					// 	to: "/",
-					// });
+					cookieHelper.set("lumino_user", data.user);
+					router.navigate({
+						to: "/",
+					});
 				}
 
 				if (!response.ok && data.code === "INVALID_EMAIL_OR_PASSWORD") {
