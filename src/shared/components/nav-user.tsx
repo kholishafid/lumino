@@ -1,4 +1,11 @@
-import { useRouter } from "@tanstack/react-router";
+import {
+	useMatch,
+	useMatches,
+	useParentMatches,
+	useRouteContext,
+	useRouter,
+	useRouterState,
+} from "@tanstack/react-router";
 import { LogOutIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -12,7 +19,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import cookieHelper from "../lib/cookie";
+import authService from "../services/auth-service";
 
 export function NavUser({
 	user,
@@ -24,10 +31,16 @@ export function NavUser({
 	};
 }) {
 	const router = useRouter();
+	const authContext = useRouteContext({
+		from: "/_authenticated",
+		select: (ctx) => ctx.auth,
+	});
 
-	function logout() {
+	async function logout() {
 		toast.loading("Logging out...", { id: "logout" });
-		cookieHelper.erase("lumino_user");
+		await authService.signOut();
+		authContext?.setUser?.(null);
+		authContext?.setSession?.(undefined);
 		toast.remove("logout");
 		router.navigate({
 			to: "/auth/signin",

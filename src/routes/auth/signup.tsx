@@ -12,5 +12,5 @@ function RouteComponent() {
 				<SignupForm />
 			</div>
 		</div>
-	)
+	);
 }

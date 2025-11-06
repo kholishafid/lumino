@@ -1,4 +1,4 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useRouteContext, useRouter } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import z from "zod";
 import { Button } from "@/shared/components/ui/button";
@@ -24,6 +24,11 @@ export function SigninForm({
 	...props
 }: React.ComponentProps<"div">) {
 	const router = useRouter();
+	const authContext = useRouteContext({
+		from: "/auth/signin",
+		select: (ctx) => ctx.auth,
+	});
+
 	const form = useAppForm({
 		defaultValues: {
 			email: "",
@@ -40,9 +45,13 @@ export function SigninForm({
 				const data = await response.json();
 
 				if (response.ok) {
-					console.log("Signin successful:", data);
 					toast.success("Signin successful!", { id: "signin" });
+
+					authContext?.setUser?.(data.user);
+					authContext?.setSession?.(data.session);
+
 					cookieHelper.set("lumino_user", data.user);
+
 					router.navigate({
 						to: "/",
 					});

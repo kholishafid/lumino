@@ -8,6 +8,11 @@ import * as TanStackQueryProvider from "@/shared/integrations/tanstack-query/roo
 import { routeTree } from "./routeTree.gen";
 
 import "./shared/styles/styles.css";
+import {
+	AuthProvider,
+	type AuthState,
+	useAuth,
+} from "./features/auth/auth-provider.tsx";
 import reportWebVitals from "./reportWebVitals.ts";
 
 // Create a new router instance
@@ -17,6 +22,7 @@ const router = createRouter({
 	routeTree,
 	context: {
 		...TanStackQueryProviderContext,
+		auth: undefined as AuthState | undefined,
 	},
 	defaultPreload: "intent",
 	scrollRestoration: true,
@@ -35,10 +41,18 @@ declare module "@tanstack/react-router" {
 const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
+
+	function InnerApp() {
+		const auth = useAuth();
+		return <RouterProvider router={router} context={{ auth }} />;
+	}
+
 	root.render(
 		<StrictMode>
 			<TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-				<RouterProvider router={router} />
+				<AuthProvider>
+					<InnerApp />
+				</AuthProvider>
 			</TanStackQueryProvider.Provider>
 		</StrictMode>,
 	);
