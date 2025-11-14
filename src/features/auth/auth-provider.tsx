@@ -22,7 +22,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		fetch(`${API_URL}/auth/get-session`)
+		fetch(`${API_URL}/auth/get-session`, {
+			credentials: "include",
+		})
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.user) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Frame, MapIcon, PieChart } from "lucide-react";
+import { CheckSquare, Frame, MapIcon, PieChart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavMain } from "@/shared/components/nav-main";
 import { NavUser } from "@/shared/components/nav-user";
@@ -10,6 +10,7 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 	SidebarRail,
+	SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 import cookieHelper from "../lib/cookie";
 import type { User } from "../types/user";
@@ -18,20 +19,9 @@ import type { User } from "../types/user";
 const data = {
 	menus: [
 		{
-			name: "Design Engineering",
-			url: "#",
-			icon: Frame,
-			active: true,
-		},
-		{
-			name: "Sales & Marketing",
-			url: "#",
-			icon: PieChart,
-		},
-		{
-			name: "Travel",
-			url: "#",
-			icon: MapIcon,
+			name: "Tasks",
+			url: "/",
+			icon: CheckSquare,
 		},
 	],
 };
@@ -47,15 +37,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 		return () => {};
 	}, []);
 	return (
-		<Sidebar collapsible="icon" {...props}>
+		<Sidebar collapsible="icon" {...props} className="border-0!">
 			<SidebarHeader>
-				<div className="flex items-center gap-2">
-					<div className="border border-orange-200 rounded w-10 group-data-[collapsible=icon]:w-full max-w-10">
-						<img src="/lumino.png" alt="Lumino Logo" className="rounded" />
+				<div className="flex items-center justify-between relative group/logo">
+					<div className="flex items-center gap-2">
+						<div className="border border-orange-200 rounded w-10 group-data-[collapsible=icon]:w-full max-w-10">
+							<img src="/lumino.png" alt="Lumino Logo" className="rounded" />
+						</div>
+						<strong className="group-data-[collapsible=icon]:hidden">
+							Lumino
+						</strong>
 					</div>
-					<strong className="group-data-[collapsible=icon]:hidden">
-						Lumino
-					</strong>
+					<div className="group-data-[collapsible=icon]:hidden">
+						<SidebarTrigger variant={"outline"} />
+					</div>
 				</div>
 			</SidebarHeader>
 			<SidebarContent>

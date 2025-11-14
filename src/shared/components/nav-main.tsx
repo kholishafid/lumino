@@ -1,28 +1,18 @@
 "use client";
 
-import {
-	Folder,
-	Forward,
-	type LucideIcon,
-	MoreHorizontal,
-	Trash2,
-} from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
 
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
+import type { LucideIcon } from "lucide-react";
+
+("@/shared/components/ui/dropdown-menu");
+
 import {
 	SidebarGroup,
 	SidebarGroupLabel,
 	SidebarMenu,
-	SidebarMenuAction,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
+	SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 
 export function NavMain({
@@ -35,55 +25,30 @@ export function NavMain({
 		active?: boolean;
 	}[];
 }) {
-	const { isMobile } = useSidebar();
+	const location = useLocation();
 
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Menu</SidebarGroupLabel>
 			<SidebarMenu>
-				{menus.map((item) => (
-					<SidebarMenuItem key={item.name}>
-						<SidebarMenuButton asChild isActive={item.active}>
-							<a href={item.url}>
-								<item.icon />
-								<span>{item.name}</span>
-							</a>
-						</SidebarMenuButton>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuAction showOnHover>
-									<MoreHorizontal />
-									<span className="sr-only">More</span>
-								</SidebarMenuAction>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								className="w-48 rounded-lg"
-								side={isMobile ? "bottom" : "right"}
-								align={isMobile ? "end" : "start"}
-							>
-								<DropdownMenuItem>
-									<Folder className="text-muted-foreground" />
-									<span>View Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<Forward className="text-muted-foreground" />
-									<span>Share Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<Trash2 className="text-muted-foreground" />
-									<span>Delete Project</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				))}
-				<SidebarMenuItem>
-					<SidebarMenuButton className="text-sidebar-foreground/70">
-						<MoreHorizontal className="text-sidebar-foreground/70" />
-						<span>More</span>
+				<SidebarMenuItem className="group-data-[collapsible=icon]:block hidden mb-2">
+					<SidebarMenuButton asChild>
+						<SidebarTrigger variant={"outline"} />
 					</SidebarMenuButton>
 				</SidebarMenuItem>
+				{menus.map((item) => (
+					<SidebarMenuItem key={item.name}>
+						<SidebarMenuButton
+							asChild
+							isActive={location.pathname === item.url}
+						>
+							<Link to={item.url}>
+								<item.icon />
+								<span>{item.name}</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				))}
 			</SidebarMenu>
 		</SidebarGroup>
 	);
