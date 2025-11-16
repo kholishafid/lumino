@@ -7,6 +7,7 @@ async function fetcher(url: string, options?: RequestInit) {
 			"Content-Type": "application/json",
 			...options?.headers,
 		},
+		credentials: "include",
 	}).then((res) => {
 		if (!res.ok) throw new Error("Network response was not ok");
 		return res.json();

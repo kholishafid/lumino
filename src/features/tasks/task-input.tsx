@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { useRouteContext } from "@tanstack/react-router";
 import { CalendarIcon, ChevronsDownIcon, Loader } from "lucide-react";
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
 import {
@@ -45,6 +46,7 @@ export function TaskInput() {
 					form.reset();
 					textareaRef.current?.focus();
 					setIsSubmitting(false);
+					toast.success("Task added successfully!");
 				})
 				.catch((error) => {
 					console.error("Error adding task:", error);
@@ -54,13 +56,13 @@ export function TaskInput() {
 	});
 	return (
 		<div>
-			<div className="mb-4">
+			<div>
 				<form.Field name="task">
 					{(field) => {
 						return (
 							<Textarea
 								ref={textareaRef}
-								className="resize-none"
+								className="resize-none field-sizing-content"
 								placeholder="Write task here"
 								onFocus={() => setFocused(true)}
 								name={field.name}
@@ -76,13 +78,19 @@ export function TaskInput() {
 										field.state.value !== "" ? form.handleSubmit() : null;
 									}
 								}}
+								disabled={isSubmitting}
+								onInput={(event) => {
+									const target = event.target as HTMLTextAreaElement;
+									target.style.height = "auto";
+									target.style.height = `${target.scrollHeight}px`;
+								}}
 							/>
 						);
 					}}
 				</form.Field>
 			</div>
 			{focused && (
-				<div className="flex justify-between">
+				<div className="flex justify-between mt-4">
 					<div className="flex gap-3">
 						<DueDatePicker />
 						<Button size={"sm"} variant={"outline"}>

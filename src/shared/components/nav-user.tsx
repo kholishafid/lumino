@@ -18,6 +18,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 } from "@/shared/components/ui/sidebar";
 import authService from "../services/auth-service";
 
@@ -57,6 +58,7 @@ export function NavUser({
 					<LogOutIcon /> Signout
 				</SidebarMenuButton>
 			</SidebarMenuItem>
+			<SidebarSeparator />
 			<SidebarMenuItem>
 				<SidebarMenuButton
 					size="lg"

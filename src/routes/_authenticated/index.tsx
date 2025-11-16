@@ -1,40 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import TaskDrawer from "@/features/tasks/task-drawer";
 import { TaskInput } from "@/features/tasks/task-input";
 import TaskList from "@/features/tasks/task-list";
 import { Card } from "@/shared/components/ui/card";
 import DashboardLayout from "@/shared/layouts/dashboard-layout";
-import { API_URL } from "@/shared/lib/constant";
 
 export const Route = createFileRoute("/_authenticated/")({
 	component: App,
 	beforeLoad: async () => {},
 });
 
-async function fetchData() {
-	const url = `${API_URL}/tasks`;
-	const options = {
-		method: "GET",
-		headers: { authorization: "Bearer " },
-		credentials: "include" as RequestCredentials,
-	};
-
-	try {
-		const response = await fetch(url, options);
-		const data = await response.json();
-		console.log(data);
-	} catch (error) {
-		console.error(error);
-	}
-}
-
 function App() {
-	useEffect(() => {
-		fetchData();
-	}, []);
 	return (
-		<DashboardLayout>
-			<div className="grid lg:grid-cols-2 grow">
+		<DashboardLayout className="pr-0">
+			<div className="grid lg:grid-cols-2 grow gap-4">
 				<Card className="w-full h-full p-4 rounded-b-none ">
 					<TaskInput />
 					<div
@@ -44,6 +23,9 @@ function App() {
 						<TaskList />
 					</div>
 				</Card>
+				<div className="relative">
+					<TaskDrawer />
+				</div>
 			</div>
 		</DashboardLayout>
 	);

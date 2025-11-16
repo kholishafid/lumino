@@ -4,21 +4,26 @@ import { Loader, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import fetcher from "@/shared/lib/fetcher";
+import { useAppStore } from "@/shared/store/use-app-store";
+import type ApiResponse from "@/shared/types/api-response";
 import type { Task } from "@/shared/types/task";
 
 export default function TaskList() {
+	const toggleDrawer = useAppStore((state) => state.tasks.toggleDrawer);
+
 	const queryClient = useRouteContext({
 		from: "/_authenticated",
 		select: (ctx) => ctx.queryClient,
 	});
 
-	const { data: tasks } = useQuery<Task[]>({
+	const { data: tasksResponse } = useQuery<ApiResponse<Task[]>>({
 		queryKey: ["tasks"],
 		queryFn: () =>
 			fetcher("/tasks", {
 				method: "GET",
 			}),
 	});
+	const tasks = tasksResponse?.data || [];
 
 	const mutation = useMutation({
 		mutationFn: (taskId: string) => {
@@ -27,7 +32,6 @@ export default function TaskList() {
 			});
 		},
 		onSuccess: () => {
-			// Invalidate and refetch
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
 		},
 	});
@@ -36,9 +40,13 @@ export default function TaskList() {
 			{tasks?.map((task) => (
 				<div key={task.id} className="h-8 flex items-center gap-3 group">
 					<Checkbox id={`task-${task.id}`} />
-					<label htmlFor={`task-${task.id}`} className="line-clamp-1">
+					<p
+						className="line-clamp-1 hover:underline cursor-pointer"
+						onClick={() => toggleDrawer(true, task)}
+						onKeyDown={() => toggleDrawer(true, task)}
+					>
 						{task.title}
-					</label>
+					</p>
 					<div className="ms-auto opacity-0 group-hover:opacity-100 transition-opacity">
 						<Button
 							variant={"outline-destructive"}
