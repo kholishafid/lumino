@@ -19,9 +19,16 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { Kbd } from "@/shared/components/ui/kbd";
 import { Textarea } from "@/shared/components/ui/textarea";
-import fetcher from "@/shared/lib/fetcher";
+import subtaskService from "@/shared/services/subtask-service";
+import taskService from "@/shared/services/task-service";
 
-export function TaskInput() {
+export function TaskInput({
+	createTarget,
+	id,
+}: {
+	createTarget?: "task" | "subtask";
+	id?: string;
+}) {
 	const [focused, setFocused] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useRouteContext({
@@ -36,22 +43,51 @@ export function TaskInput() {
 		},
 		onSubmit: (values) => {
 			setIsSubmitting(true);
-			fetcher("/tasks", {
-				method: "POST",
-				body: JSON.stringify({ title: values.value.task, description: "abcd" }),
-				credentials: "include",
-			})
-				.then(() => {
-					queryClient.invalidateQueries({ queryKey: ["tasks"] });
-					form.reset();
-					textareaRef.current?.focus();
-					setIsSubmitting(false);
-					toast.success("Task added successfully!");
-				})
-				.catch((error) => {
-					console.error("Error adding task:", error);
-					setIsSubmitting(false);
-				});
+
+			if (createTarget === "subtask" && id) {
+				subtaskService
+					.createSubtask({
+						data: { title: values.value.task, description: "" },
+						taskId: id,
+					})
+					.then(() => {
+						queryClient.invalidateQueries({ queryKey: ["tasks"] });
+						form.reset();
+						textareaRef.current?.focus();
+						setIsSubmitting(false);
+						toast.success("Task added successfully!");
+						if (textareaRef.current) {
+							textareaRef.current.style.height = "auto";
+						}
+					})
+					.catch((error) => {
+						console.error("Error adding task:", error);
+						setIsSubmitting(false);
+					});
+			}
+
+			if (!createTarget || createTarget === "task") {
+				taskService
+					.createTask({
+						data: { title: values.value.task, description: "" },
+					})
+					.then(() => {
+						queryClient.invalidateQueries({ queryKey: ["tasks"] });
+						form.reset();
+						textareaRef.current?.focus();
+						setIsSubmitting(false);
+						toast.success("Task added successfully!");
+						if (textareaRef.current) {
+							textareaRef.current.style.height = "auto";
+						}
+						
+					})
+					.catch((error) => {
+						console.error("Error adding task:", error);
+						setIsSubmitting(false);
+					});
+				return;
+			}
 		},
 	});
 	return (

@@ -13,8 +13,8 @@ export const Route = createFileRoute("/_authenticated/")({
 function App() {
 	return (
 		<DashboardLayout className="pr-0">
-			<div className="grid lg:grid-cols-2 grow gap-4">
-				<Card className="w-full h-full p-4 rounded-b-none ">
+			<div className="flex h-full gap-4">
+				<Card className="p-4 grow rounded-b-none overflow-auto overflow-x-hidden w-1/2 shrink">
 					<TaskInput />
 					<div
 						className="h-full bg-[linear-gradient(var(--color-slate-50)_2px,transparent_2px)]
@@ -23,9 +23,7 @@ function App() {
 						<TaskList />
 					</div>
 				</Card>
-				<div className="relative">
-					<TaskDrawer />
-				</div>
+				<TaskDrawer />
 			</div>
 		</DashboardLayout>
 	);

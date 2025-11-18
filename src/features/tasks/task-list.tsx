@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
-import { Loader, Trash } from "lucide-react";
+import { Loader, LoaderIcon, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import fetcher from "@/shared/lib/fetcher";
@@ -16,7 +16,7 @@ export default function TaskList() {
 		select: (ctx) => ctx.queryClient,
 	});
 
-	const { data: tasksResponse } = useQuery<ApiResponse<Task[]>>({
+	const { data: tasksResponse, isLoading } = useQuery<ApiResponse<Task[]>>({
 		queryKey: ["tasks"],
 		queryFn: () =>
 			fetcher("/tasks", {
@@ -37,33 +37,40 @@ export default function TaskList() {
 	});
 	return (
 		<div>
-			{tasks?.map((task) => (
-				<div key={task.id} className="h-8 flex items-center gap-3 group">
-					<Checkbox id={`task-${task.id}`} />
-					<p
-						className="line-clamp-1 hover:underline cursor-pointer"
-						onClick={() => toggleDrawer(true, task)}
-						onKeyDown={() => toggleDrawer(true, task)}
-					>
-						{task.title}
-					</p>
-					<div className="ms-auto opacity-0 group-hover:opacity-100 transition-opacity">
-						<Button
-							variant={"outline-destructive"}
-							size={"icon"}
-							className="p-0 size-8"
-							onClick={() => mutation.mutate(task.id)}
-						>
-							{mutation.isPending ? (
-								<Loader className="h-4 w-4 animate-spin" />
-							) : (
-								<Trash className="h-4 w-4 text-red-500 hover:text-red-700 cursor-pointer" />
-							)}
-						</Button>
-					</div>
+			{isLoading && (
+				<div className="text-center text-sm text-slate-500 h-8 flex items-center justify-center">
+					<LoaderIcon className="animate-spin size-4 mr-2" />
+					Loading tasks...
 				</div>
-			))}
-			{tasks?.length === 0 && (
+			)}
+			{!isLoading &&
+				tasks?.map((task) => (
+					<div key={task.id} className="h-8 flex items-center gap-3 group">
+						<Checkbox id={`task-${task.id}`} />
+						<p
+							className="line-clamp-1 hover:underline cursor-pointer"
+							onClick={() => toggleDrawer(true, task)}
+							onKeyDown={() => toggleDrawer(true, task)}
+						>
+							{task.title}
+						</p>
+						<div className="ms-auto opacity-0 group-hover:opacity-100 transition-opacity">
+							<Button
+								variant={"outline-destructive"}
+								size={"icon"}
+								className="p-0 size-8"
+								onClick={() => mutation.mutate(task.id)}
+							>
+								{mutation.isPending ? (
+									<Loader className="h-4 w-4 animate-spin" />
+								) : (
+									<Trash className="h-4 w-4 text-red-500 hover:text-red-700 cursor-pointer" />
+								)}
+							</Button>
+						</div>
+					</div>
+				))}
+			{!isLoading && tasks.length === 0 && (
 				<div className="text-center text-sm text-slate-500 h-8 flex items-center justify-center">
 					No tasks available. Add a new task above.
 				</div>

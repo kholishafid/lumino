@@ -27,6 +27,9 @@
 			"recommended": true,
 			"correctness": {
 				"useExhaustiveDependencies": "info"
+			},
+			"a11y": {
+				"noStaticElementInteractions": "off"
 			}
 		}
 	},
