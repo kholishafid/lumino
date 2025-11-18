@@ -10,6 +10,10 @@ interface TaskSlice {
 		isOpen: boolean,
 		data?: TaskSlice["drawerState"]["data"],
 	) => void;
+	listState: {
+		selectedTaskIds: string[] | null;
+	};
+	setSelectedTaskIds: (ids: string[] | null) => void;
 }
 
 const createTaskSlice: ImmerStateCreator<TaskSlice> = (set) => ({
@@ -20,6 +24,13 @@ const createTaskSlice: ImmerStateCreator<TaskSlice> = (set) => ({
 	toggleDrawer: (isOpen, data) =>
 		set((state) => {
 			state.tasks.drawerState = { isOpen, data };
+		}),
+	listState: {
+		selectedTaskIds: null,
+	},
+	setSelectedTaskIds: (ids) =>
+		set((state) => {
+			state.tasks.listState.selectedTaskIds = ids;
 		}),
 });
 

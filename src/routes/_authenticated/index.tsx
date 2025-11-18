@@ -16,12 +16,7 @@ function App() {
 			<div className="flex h-full gap-4 w-full">
 				<Card className="p-4 grow-0 basis-1/2 rounded-b-none overflow-auto overflow-x-hidden">
 					<TaskInput />
-					<div
-						className="h-full bg-[linear-gradient(var(--color-slate-50)_2px,transparent_2px)]
- 0.05em, transparent 0.05em] bg-size-[100%_32px] bg-repeat-y transition-all"
-					>
-						<TaskList />
-					</div>
+					<TaskList />
 				</Card>
 				<TaskDrawer />
 			</div>
