@@ -17,6 +17,7 @@ import taskService from "@/shared/services/task-service";
 import { useAppStore } from "@/shared/store/use-app-store";
 import type ApiResponse from "@/shared/types/api-response";
 import type { Task } from "@/shared/types/task";
+import SubtasksList from "../subtask/subtaks.list";
 import { TaskInput } from "./task-input";
 
 export default function TaskDrawer() {
@@ -26,7 +27,7 @@ export default function TaskDrawer() {
 	return (
 		<Card
 			className={cn(
-				"shadow-none w-1/2 transition-all p-4 max-h-full grow overflow-x-hidden flex-1 shrink",
+				"shadow-none transition-all p-4 max-h-full grow-0 basis-1/2 overflow-x-hidden",
 				drawer.isOpen ? "translate-x-0" : "translate-x-full",
 			)}
 		>
@@ -78,13 +79,13 @@ export default function TaskDrawer() {
 				</Button>
 			</div>
 			<TaskDetail />
-			<div>
+			<div className="h-full">
 				<div className="mb-2">
 					<strong>Subtask</strong>
 				</div>
-				<div>
+				<div className="h-full">
 					<TaskInput createTarget="subtask" id={drawer.data?.id} />
-					{JSON.stringify(drawer.data)}
+					<SubtasksList taskId={drawer.data?.id || ""} />
 				</div>
 			</div>
 		</Card>

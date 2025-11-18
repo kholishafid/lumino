@@ -51,7 +51,7 @@ export function TaskInput({
 						taskId: id,
 					})
 					.then(() => {
-						queryClient.invalidateQueries({ queryKey: ["tasks"] });
+						queryClient.invalidateQueries({ queryKey: [`subtasks-${id}`] });
 						form.reset();
 						textareaRef.current?.focus();
 						setIsSubmitting(false);
