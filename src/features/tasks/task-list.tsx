@@ -1,16 +1,21 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
+import { format } from "date-fns";
 import { Loader, LoaderIcon, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import fetcher from "@/shared/lib/fetcher";
+import { daysStatus } from "@/shared/lib/utils";
+import taskService from "@/shared/services/task-service";
 import { useAppStore } from "@/shared/store/use-app-store";
 import type ApiResponse from "@/shared/types/api-response";
 import type { Task } from "@/shared/types/task";
 import TaskSelectedAction from "./task-selected-action";
 
 export default function TaskList() {
-	const { setSelectedTaskIds, listState } = useAppStore((state) => state.tasks);
+	const { setSelectedTaskIds, listState, drawerState } = useAppStore(
+		(state) => state.tasks,
+	);
 	const toggleDrawer = useAppStore((state) => state.tasks.toggleDrawer);
 
 	const queryClient = useRouteContext({
@@ -20,10 +25,7 @@ export default function TaskList() {
 
 	const { data: tasksResponse, isLoading } = useQuery<ApiResponse<Task[]>>({
 		queryKey: ["tasks"],
-		queryFn: () =>
-			fetcher("/tasks", {
-				method: "GET",
-			}),
+		queryFn: taskService.getUnfinishedTasks,
 	});
 	const tasks = tasksResponse?.data || [];
 
@@ -35,6 +37,9 @@ export default function TaskList() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			if (drawerState.data?.id === mutation.variables) {
+				toggleDrawer(false, null);
+			}
 		},
 	});
 
@@ -72,14 +77,28 @@ export default function TaskList() {
 								checked={listState.selectedTaskIds?.includes(task.id)}
 								onCheckedChange={(v) => taskSelected(task.id, v === true)}
 							/>
-							<p
-								className="line-clamp-1 hover:underline cursor-pointer"
-								onClick={() => toggleDrawer(true, task)}
-								onKeyDown={() => toggleDrawer(true, task)}
-							>
-								{task.title}
-							</p>
-							<div className="ms-auto opacity-0 group-hover:opacity-100 transition-opacity">
+							<div className="flex gap-2 items-center">
+								{task.priority === "high" && (
+									<div className="size-3 bg-orange-600 rounded-full"></div>
+								)}
+								{task.priority === "medium" && (
+									<div className="size-3 bg-amber-400 rounded-full"></div>
+								)}
+								{task.priority === "low" && (
+									<div className="size-3 bg-green-400 rounded-full"></div>
+								)}
+								<p
+									className="line-clamp-1 hover:underline cursor-pointer"
+									onClick={() => toggleDrawer(true, task)}
+									onKeyDown={() => toggleDrawer(true, task)}
+								>
+									{task.title}
+								</p>
+							</div>
+							<span className="text-sm text-muted-foreground ml-auto block">
+								{task.dueDate ? daysStatus(new Date(task.dueDate)) : null}
+							</span>
+							<div className="opacity-0 group-hover:opacity-100 transition-opacity">
 								<Button
 									variant={"outline-destructive"}
 									size={"icon"}

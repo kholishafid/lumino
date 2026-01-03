@@ -1,5 +1,6 @@
 import { useRouteContext } from "@tanstack/react-router";
-import { Square } from "lucide-react";
+import { CheckCheck, Square, SquareCheck, Trash } from "lucide-react";
+import toast from "react-hot-toast";
 import { Button } from "@/shared/components/ui/button";
 import {
 	DropdownMenu,
@@ -7,6 +8,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import taskService from "@/shared/services/task-service";
 import { useAppStore } from "@/shared/store/use-app-store";
 import type ApiResponse from "@/shared/types/api-response";
 import type { Task } from "@/shared/types/task";
@@ -25,18 +27,42 @@ export default function TaskSelectedAction() {
 			setSelectedTaskIds(tasks.data.map((task) => task.id));
 		}
 	}
-
+	const tasksList = queryClient.getQueryData<ApiResponse<Task[]>>(["tasks"]);
 	function deselectAllTask() {
 		setSelectedTaskIds([]);
 	}
 
+	function markTaskComplete() {
+		if (listState.selectedTaskIds) {
+			taskService.markCompleted({ ids: listState.selectedTaskIds }).then(() => {
+				queryClient.invalidateQueries({ queryKey: ["tasks"] });
+				toast.success("Task marked as complete!");
+				setSelectedTaskIds([]);
+			});
+		}
+	}
+
+	function deleteSelectedTask() {
+		if (listState.selectedTaskIds) {
+			taskService.deleteTasks({ ids: listState.selectedTaskIds }).then(() => {
+				queryClient.invalidateQueries({ queryKey: ["tasks"] });
+				toast.success("Task(s) deleted successfully!");
+				setSelectedTaskIds([]);
+			});
+		}
+	}
+
 	return (
-		<div>
+		<div className="flex gap-3">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button size={"sm"} variant={"outline"}>
-						<Square />
-						Selected
+						{listState.selectedTaskIds?.length === tasksList?.data.length ? (
+							<SquareCheck />
+						) : (
+							<Square />
+						)}
+						Select
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start">
@@ -48,6 +74,12 @@ export default function TaskSelectedAction() {
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
+			<Button variant={"outline"} onClick={markTaskComplete} size={"sm"}>
+				<CheckCheck /> Mark Complete
+			</Button>
+			<Button variant={"outline"} onClick={deleteSelectedTask} size={"sm"}>
+				<Trash /> Delete
+			</Button>
 		</div>
 	);
 }

@@ -5,6 +5,8 @@ export type Task = {
 	title: string;
 	description: string;
 	dueDate?: string;
+	priority?: "low" | "medium" | "high";
+	isFinished: boolean;
 	createdAt?: string;
 	updatedAt?: string;
 	subtasks?: Subtask[];

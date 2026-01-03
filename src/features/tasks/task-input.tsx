@@ -1,26 +1,17 @@
 import { useForm } from "@tanstack/react-form";
 import { useRouteContext } from "@tanstack/react-router";
-import { CalendarIcon, ChevronsDownIcon, Loader } from "lucide-react";
+import { ChevronsDownIcon, Loader } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuPortal,
-	DropdownMenuSeparator,
-	DropdownMenuShortcut,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
-	DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
 import { Kbd } from "@/shared/components/ui/kbd";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { cn } from "@/shared/lib/utils";
 import subtaskService from "@/shared/services/subtask-service";
 import taskService from "@/shared/services/task-service";
+import DueDatePicker from "./due-date-picker";
+import PriorityPicker from "./priority-picker";
 
 export function TaskInput({
 	createTarget,
@@ -40,14 +31,23 @@ export function TaskInput({
 	const form = useForm({
 		defaultValues: {
 			task: "",
+			dueDate: undefined as Date | undefined,
+			priority: undefined as "low" | "medium" | "high" | undefined,
 		},
 		onSubmit: (values) => {
 			setIsSubmitting(true);
 
+			// Create subtask
 			if (createTarget === "subtask" && id) {
 				subtaskService
 					.createSubtask({
-						data: { title: values.value.task, description: "" },
+						data: {
+							title: values.value.task,
+							description: "",
+							isFinished: false,
+							dueDate: values.value.dueDate,
+							priority: values.value.priority,
+						},
 						taskId: id,
 					})
 					.then(() => {
@@ -66,10 +66,17 @@ export function TaskInput({
 					});
 			}
 
+			// Ini create task
 			if (!createTarget || createTarget === "task") {
 				taskService
 					.createTask({
-						data: { title: values.value.task, description: "" },
+						data: {
+							title: values.value.task,
+							description: "",
+							isFinished: false,
+							dueDate: values.value.dueDate,
+							priority: values.value.priority,
+						},
 					})
 					.then(() => {
 						queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -80,7 +87,6 @@ export function TaskInput({
 						if (textareaRef.current) {
 							textareaRef.current.style.height = "auto";
 						}
-						
 					})
 					.catch((error) => {
 						console.error("Error adding task:", error);
@@ -90,9 +96,22 @@ export function TaskInput({
 			}
 		},
 	});
+
 	return (
-		<div>
-			<div>
+		<form
+			onSubmit={(e) => {
+				e.preventDefault();
+			}}
+			onBlur={(e) => {
+				if (!e.relatedTarget?.closest("[data-form-scope]")) {
+					if (textareaRef.current?.value === "") {
+						setFocused(false);
+					}
+				}
+			}}
+			data-form-scope
+		>
+			<div data-form-scope>
 				<form.Field name="task">
 					{(field) => {
 						return (
@@ -103,10 +122,7 @@ export function TaskInput({
 								onFocus={() => setFocused(true)}
 								name={field.name}
 								value={field.state.value}
-								onBlur={(e) => {
-									if (e.target.value === "") setFocused(false);
-									field.handleBlur();
-								}}
+								onBlur={() => field.handleBlur()}
 								onChange={(e) => field.handleChange(e.target.value)}
 								onKeyDown={(e) => {
 									if (e.key === "Enter" && !e.shiftKey) {
@@ -128,19 +144,29 @@ export function TaskInput({
 			{focused && (
 				<div className="flex justify-between mt-4">
 					<div className="flex gap-3">
-						<DueDatePicker />
-						<Button size={"sm"} variant={"outline"}>
-							<ChevronsDownIcon />
-							Priority
-						</Button>
+						<DueDatePicker
+							onOpen={setFocused}
+							onValueChange={(e) =>
+								e ? form.setFieldValue("dueDate", e) : null
+							}
+						/>
+						<PriorityPicker
+							onValueChange={(e) =>
+								e ? form.setFieldValue("priority", e) : null
+							}
+						/>
 					</div>
 					<form.Subscribe selector={(state) => state.values.task}>
 						{(task) => (
 							<Button
 								size={"sm"}
-								disabled={task === "" || isSubmitting}
 								type="submit"
-								onClick={form.handleSubmit}
+								data-form-scope
+								className={cn(task === "" || isSubmitting ? "opacity-50" : "")}
+								onClick={() => {
+									if (task === "" || isSubmitting) return;
+									form.handleSubmit();
+								}}
 							>
 								{isSubmitting ? (
 									<>
@@ -156,64 +182,6 @@ export function TaskInput({
 					</form.Subscribe>
 				</div>
 			)}
-		</div>
-	);
-}
-
-function DueDatePicker() {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button size={"sm"} variant={"outline"}>
-					<CalendarIcon />
-					Due date
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="start" className="min-w-[200px]">
-				<DropdownMenuItem>
-					Today
-					<DropdownMenuShortcut>
-						{new Date().toLocaleDateString("en-US", {
-							month: "short",
-							day: "numeric",
-						})}
-					</DropdownMenuShortcut>
-				</DropdownMenuItem>
-				<DropdownMenuItem>
-					Tomorrow{" "}
-					<DropdownMenuShortcut>
-						{new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString(
-							"en-US",
-							{
-								month: "short",
-								day: "numeric",
-							},
-						)}
-					</DropdownMenuShortcut>
-				</DropdownMenuItem>
-				<DropdownMenuItem>
-					1 week{" "}
-					<DropdownMenuShortcut>
-						{new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(
-							"en-US",
-							{
-								month: "short",
-								day: "numeric",
-							},
-						)}
-					</DropdownMenuShortcut>
-				</DropdownMenuItem>
-				<DropdownMenuItem>No due date</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuSub>
-					<DropdownMenuSubTrigger>Date Picker</DropdownMenuSubTrigger>
-					<DropdownMenuPortal>
-						<DropdownMenuSubContent className="w-[250px]">
-							<Calendar className="w-full" />
-						</DropdownMenuSubContent>
-					</DropdownMenuPortal>
-				</DropdownMenuSub>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		</form>
 	);
 }
