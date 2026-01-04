@@ -44,7 +44,7 @@ export default function DueDatePicker({
 								month: "short",
 								day: "numeric",
 								year: "numeric",
-						  })
+							})
 						: "No due date"}
 				</Button>
 			</DropdownMenuTrigger>
@@ -62,7 +62,9 @@ export default function DueDatePicker({
 						})}
 					</DropdownMenuShortcut>
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setValue(new Date(Date.now() + 24 * 60 * 60 * 1000))}>
+				<DropdownMenuItem
+					onClick={() => setValue(new Date(Date.now() + 24 * 60 * 60 * 1000))}
+				>
 					Tomorrow{" "}
 					<DropdownMenuShortcut>
 						{new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString(
@@ -74,7 +76,11 @@ export default function DueDatePicker({
 						)}
 					</DropdownMenuShortcut>
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setValue(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))}>
+				<DropdownMenuItem
+					onClick={() =>
+						setValue(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))
+					}
+				>
 					1 week{" "}
 					<DropdownMenuShortcut>
 						{new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(
@@ -86,7 +92,9 @@ export default function DueDatePicker({
 						)}
 					</DropdownMenuShortcut>
 				</DropdownMenuItem>
-				<DropdownMenuItem>No due date</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setValue(undefined)}>
+					No due date
+				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuSub>
 					<DropdownMenuSubTrigger>Date Picker</DropdownMenuSubTrigger>
@@ -96,7 +104,7 @@ export default function DueDatePicker({
 								selected={value}
 								onSelect={setValue}
 								className="w-full"
-                mode="single"
+								mode="single"
 							/>
 						</DropdownMenuSubContent>
 					</DropdownMenuPortal>
