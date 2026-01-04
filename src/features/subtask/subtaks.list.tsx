@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { Loader, LoaderIcon, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -6,9 +6,9 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import fetcher from "@/shared/lib/fetcher";
 import { daysStatus } from "@/shared/lib/utils";
 import subtaskService from "@/shared/services/subtask-service";
+import { useAppStore } from "@/shared/store/use-app-store";
 import type ApiResponse from "@/shared/types/api-response";
 import type { Subtask } from "@/shared/types/subtask";
-import { useAppStore } from "@/shared/store/use-app-store";
 import SubtaskSelectedAction from "./subtask-selection-action";
 
 export default function SubtasksList({ taskId }: { taskId: string }) {
@@ -22,10 +22,7 @@ export default function SubtasksList({ taskId }: { taskId: string }) {
     (state) => state.subtasks,
   );
 
-  const queryClient = useRouteContext({
-    from: "/_authenticated",
-    select: (ctx) => ctx.queryClient,
-  });
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (taskId: string) => {

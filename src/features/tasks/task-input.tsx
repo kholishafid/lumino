@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { ChevronsDownIcon, Loader } from "lucide-react";
 import { useRef, useState } from "react";
@@ -22,10 +23,7 @@ export function TaskInput({
 }) {
 	const [focused, setFocused] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const queryClient = useRouteContext({
-		from: "/_authenticated/",
-		select: (ctx) => ctx.queryClient,
-	});
+	const queryClient = useQueryClient();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const form = useForm({

@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckSquare, Frame, MapIcon, PieChart } from "lucide-react";
+import { Calendar, CheckSquare, Frame, LayoutList, ListChecks, MapIcon, PieChart, Square } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavMain } from "@/shared/components/nav-main";
 import { NavUser } from "@/shared/components/nav-user";
@@ -21,7 +21,17 @@ const data = {
 		{
 			name: "Tasks",
 			url: "/",
-			icon: CheckSquare,
+			icon: LayoutList,
+		},
+		{
+			name: "Completed Tasks",
+			url: "/completed-tasks",
+			icon: ListChecks,
+		},
+		{
+			name: "Task Calendar",
+			url: "/calendar",
+			icon: Calendar,
 		},
 	],
 };

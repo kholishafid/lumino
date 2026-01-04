@@ -1,0 +1,28 @@
+:root {
+	--fc-today-bg-color: oklch(98.6% 0.031 120.757);
+}
+.fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.fc-direction-rtl .fc-daygrid-event.fc-event-start {
+	padding: 2px 8px;
+	border-radius: 200px;
+	font-weight: 600;
+	background-color: white;
+	border-color: var(--color-slate-200);
+	box-shadow: var(--shadow-xs);
+	cursor: pointer;
+}
+
+.fc-daygrid-block-event .fc-event-time,
+.fc-daygrid-block-event .fc-event-title {
+	color: var(--color-slate-700);
+}
+
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.fc-event-selected::after, .fc-event:focus::after {
+	background-color: unset;
+}
