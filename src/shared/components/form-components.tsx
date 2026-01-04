@@ -39,7 +39,7 @@ export function FormErrorMessage() {
 					{error.onSubmit && (
 						<FieldError className="flex items-center">
 							<TriangleAlert className="mr-2 size-4" />
-							{error.onSubmit}
+							{JSON.stringify(error.onSubmit)}
 						</FieldError>
 					)}
 				</>

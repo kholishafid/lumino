@@ -24,11 +24,6 @@ const data = {
 			icon: LayoutList,
 		},
 		{
-			name: "Completed Tasks",
-			url: "/completed-tasks",
-			icon: ListChecks,
-		},
-		{
 			name: "Task Calendar",
 			url: "/calendar",
 			icon: Calendar,

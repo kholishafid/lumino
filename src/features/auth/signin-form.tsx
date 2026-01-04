@@ -114,17 +114,17 @@ export function SigninForm({
 								)}
 							</form.AppField>
 
-							<form.AppForm>
+							{/* <form.AppForm>
 								<form.FormErrorMessage />
-							</form.AppForm>
+							</form.AppForm> */}
 
 							<form.AppForm>
 								<form.SubscribeButton label="Signin" />
 							</form.AppForm>
-							<FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+							{/* <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
 								Or continue with
-							</FieldSeparator>
-							<Field className="grid grid-cols-3 gap-4">
+							</FieldSeparator> */}
+							{/* <Field className="grid grid-cols-3 gap-4">
 								<Button
 									variant="outline"
 									type="button"
@@ -143,7 +143,7 @@ export function SigninForm({
 										Coming soon
 									</span>
 								</Button>
-							</Field>
+							</Field> */}
 							<FieldDescription className="text-center">
 								Don&apos;t have an account?{" "}
 								<Link className="text-primary" to="/auth/signup">

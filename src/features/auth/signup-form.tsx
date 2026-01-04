@@ -73,6 +73,12 @@ export function SignupForm({
 						},
 					});
 				}
+				if (!response.ok) {
+					toast.error(
+						data.message || "Something went wrong. Please try again.",
+						{ id: "signup" },
+					);
+				}
 			} catch {
 				toast.error("Something went wrong. Please try again.", {
 					id: "signup",
@@ -136,14 +142,14 @@ export function SignupForm({
 								)}
 							</form.AppField>
 
-							<form.AppForm>
+							{/* <form.AppForm>
 								<form.FormErrorMessage />
-							</form.AppForm>
+							</form.AppForm> */}
 
 							<form.AppForm>
 								<form.SubscribeButton label="Signup" />
 							</form.AppForm>
-							<FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+							{/* <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
 								Or continue with
 							</FieldSeparator>
 							<Field className="grid grid-cols-3 gap-4">
@@ -165,7 +171,7 @@ export function SignupForm({
 										Coming soon
 									</span>
 								</Button>
-							</Field>
+							</Field> */}
 							<FieldDescription className="text-center">
 								Already have an account?{" "}
 								<Link className="text-primary" to="/auth/signin">
