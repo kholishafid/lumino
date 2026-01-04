@@ -3,16 +3,13 @@ import { useRouteContext } from "@tanstack/react-router";
 import { Loader, LoaderIcon, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import fetcher from "@/shared/lib/fetcher";
-import { daysStatus } from "@/shared/lib/utils";
 import taskService from "@/shared/services/task-service";
 import { useAppStore } from "@/shared/store/use-app-store";
 import type ApiResponse from "@/shared/types/api-response";
 import type { Task } from "@/shared/types/task";
 
 export default function TaskList() {
-	const { setSelectedTaskIds, listState, drawerState } = useAppStore(
-		(state) => state.tasks,
-	);
+	const { drawerState } = useAppStore((state) => state.tasks);
 	const toggleDrawer = useAppStore((state) => state.tasks.toggleDrawer);
 
 	const queryClient = useRouteContext({

@@ -1,6 +1,9 @@
 "use client";
 
-import { Calendar, CheckSquare, Frame, LayoutList, ListChecks, MapIcon, PieChart, Square } from "lucide-react";
+import {
+	Calendar,
+	LayoutList,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavMain } from "@/shared/components/nav-main";
 import { NavUser } from "@/shared/components/nav-user";
