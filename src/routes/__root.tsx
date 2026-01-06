@@ -18,18 +18,20 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				<div className="h-screen w-screen flex flex-col overflow-hidden">
 					<Outlet />
 				</div>
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						TanStackQueryDevtools,
-					]}
-				/>
+				{import.meta.env.VITE_ENV === "development" && (
+					<TanStackDevtools
+						config={{
+							position: "bottom-right",
+						}}
+						plugins={[
+							{
+								name: "Tanstack Router",
+								render: <TanStackRouterDevtoolsPanel />,
+							},
+							TanStackQueryDevtools,
+						]}
+					/>
+				)}
 				<Toaster position="bottom-center" />
 			</>
 		);
