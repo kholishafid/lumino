@@ -50,4 +50,4 @@ jobs:
         run: |
           rsync -az --delete \
             -e "ssh -p $PORT -i ~/.ssh/id_ed25519" \
-            dist/ "$USER@$HOST:/var/www/lumino/"
+            dist/ "$USER@$HOST:/var/www/lumino/app"

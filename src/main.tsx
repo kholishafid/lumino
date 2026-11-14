@@ -20,6 +20,7 @@ import reportWebVitals from "./reportWebVitals.ts";
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext();
 const router = createRouter({
 	routeTree,
+	basepath: "/app",
 	context: {
 		...TanStackQueryProviderContext,
 		auth: undefined as AuthState | undefined,
