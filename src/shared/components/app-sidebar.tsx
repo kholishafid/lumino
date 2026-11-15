@@ -50,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<div className="flex items-center justify-between relative group/logo">
 					<div className="flex items-center gap-2">
 						<div className="border border-orange-200 rounded w-10 group-data-[collapsible=icon]:w-full max-w-10">
-							<img src="/lumino.png" alt="Lumino Logo" className="rounded" />
+							<img src={`${import.meta.env.BASE_URL}lumino.png`} alt="Lumino Logo" className="rounded" />
 						</div>
 						<strong className="group-data-[collapsible=icon]:hidden">
 							Lumino

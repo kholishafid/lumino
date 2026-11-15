@@ -97,7 +97,7 @@ export function SignupForm({
 					<form className="p-6 md:p-8" onSubmit={submit}>
 						<div className="flex items-center justify-center mx-auto mb-3">
 							<img
-								src="/lumino.png"
+								src={`${import.meta.env.BASE_URL}lumino.png`}
 								alt="Lumino Logo"
 								className="rounded size-12"
 							/>
@@ -179,7 +179,7 @@ export function SignupForm({
 					</form>
 					<div className="bg-muted relative hidden md:block">
 						<img
-							src="/img/calendar-photo-2.jpg"
+							src={`${import.meta.env.BASE_URL}img/calendar-photo-2.jpg`}
 							alt="Calendar by Eric Rothermel on Unsplash"
 							className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
 						/>
